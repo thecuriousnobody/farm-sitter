@@ -1,0 +1,347 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Users & Auth
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  PUBLIC_LEAD
+  OPERATOR_PROSPECT
+  TRAINEE
+  CREDENTIALED_OPERATOR
+  AFFILIATE
+  ANIMAL_OWNER
+  ADMIN
+  INSTRUCTOR
+}
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  firstName     String
+  lastName      String
+  phone         String?
+  address       String?
+  city          String?
+  state         String?
+  zip           String?
+  timezone      String?
+  roles         UserRole[]
+  accountStatus AccountStatus @default(ACTIVE)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  operatorProfile  OperatorProfile?
+  customerProfile  CustomerProfile?
+  enrollments      Enrollment[]
+  credentials      CredentialRecord[]
+  affiliateLicense AffiliateRecord?
+  compliance       ComplianceRecord?
+  inquiries        CareRequest[]
+}
+
+// ---------------------------------------------------------------------------
+// Operator Profile
+// ---------------------------------------------------------------------------
+
+enum CredentialLevel {
+  NONE
+  CREDENTIALED
+  AFFILIATE
+}
+
+enum BadgeStatus {
+  NONE
+  ACTIVE
+  EXPIRED
+}
+
+model OperatorProfile {
+  id                  String          @id @default(cuid())
+  userId              String          @unique
+  user                User            @relation(fields: [userId], references: [id])
+  businessName        String?
+  legalEntityName     String?
+  credentialLevel     CredentialLevel @default(NONE)
+  serviceRadiusMiles  Int             @default(25)
+  statesServed        String[]
+  zipCodesServed      String[]
+  animalsExperienced  String[]
+  servicesOffered     String[]
+  yearsExperience     Int             @default(0)
+  bio                 String?
+  acceptingClients    Boolean         @default(false)
+  directoryVisible    Boolean         @default(false)
+  insuranceVerified   Boolean         @default(false)
+  backgroundVerified  Boolean         @default(false)
+  referencesVerified  Boolean         @default(false)
+  badgeStatus         BadgeStatus     @default(NONE)
+  renewalDate         DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Customer Profile
+// ---------------------------------------------------------------------------
+
+model CustomerProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id])
+  propertyType       String?
+  primaryAnimalTypes String[]
+  animalCounts       Json?
+  notes              String?
+  marketingConsent   Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Care Requests / Inquiries
+// ---------------------------------------------------------------------------
+
+enum InquiryStatus {
+  NEW
+  MATCHED
+  POSTED
+  CLOSED
+}
+
+model CareRequest {
+  id                 String        @id @default(cuid())
+  customerId         String
+  customer           User          @relation(fields: [customerId], references: [id])
+  tripStart          DateTime?
+  tripEnd            DateTime?
+  animalTypes        String[]
+  animalQuantities   Json?
+  serviceNotes       String?
+  overnightRequested Boolean       @default(false)
+  dogCareRequired    Boolean       @default(false)
+  estimatedCareTime  String?
+  city               String?
+  state              String?
+  zip                String?
+  status             InquiryStatus @default(NEW)
+  matchedOperatorIds String[]
+  bulletinBoard      Boolean       @default(false)
+  adminNotes         String?
+  closeReason        String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Training & Workshops
+// ---------------------------------------------------------------------------
+
+enum CourseFormat {
+  IN_PERSON
+  VIRTUAL
+  HYBRID
+  SELF_PACED
+}
+
+enum CourseStatus {
+  DRAFT
+  OPEN
+  CLOSED
+  COMPLETED
+}
+
+model Course {
+  id                     String       @id @default(cuid())
+  title                  String
+  description            String?
+  format                 CourseFormat
+  cohortDate             DateTime?
+  modules                Json?
+  instructorId           String?
+  priceCents             Int
+  status                 CourseStatus @default(DRAFT)
+  completionRequirements Json?
+  registrationCap        Int?
+  venue                  String?
+  enrollments            Enrollment[]
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum AttendanceStatus {
+  REGISTERED
+  ATTENDED
+  NO_SHOW
+}
+
+enum CompletionStatus {
+  INCOMPLETE
+  COMPLETED
+}
+
+enum TestStatus {
+  NOT_TAKEN
+  PASSED
+  FAILED
+}
+
+model Enrollment {
+  id               String           @id @default(cuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id])
+  courseId          String
+  course           Course           @relation(fields: [courseId], references: [id])
+  paymentStatus    PaymentStatus    @default(PENDING)
+  attendanceStatus AttendanceStatus @default(REGISTERED)
+  completionStatus CompletionStatus @default(INCOMPLETE)
+  testStatus       TestStatus       @default(NOT_TAKEN)
+  credentialIssued Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Credentials
+// ---------------------------------------------------------------------------
+
+enum CredentialStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  RENEWAL_PENDING
+}
+
+model CredentialRecord {
+  id                String           @id @default(cuid())
+  operatorId        String
+  operator          User             @relation(fields: [operatorId], references: [id])
+  credentialType    String
+  issueDate         DateTime
+  expirationDate    DateTime
+  status            CredentialStatus @default(ACTIVE)
+  ceRequired        Int              @default(0)
+  ceCompleted       Int              @default(0)
+  verificationToken String           @unique @default(cuid())
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Affiliate / License
+// ---------------------------------------------------------------------------
+
+enum AffiliateStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+}
+
+model AffiliateRecord {
+  id                  String          @id @default(cuid())
+  operatorId          String          @unique
+  operator            User            @relation(fields: [operatorId], references: [id])
+  licenseStart        DateTime
+  licenseEnd          DateTime
+  annualFeeTier       String?
+  territoryPreference Json?
+  status              AffiliateStatus @default(PENDING)
+  complianceFlags     Json?
+  brandUseApproved    Boolean         @default(false)
+  listingPriority     Int             @default(0)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Compliance / Verification
+// ---------------------------------------------------------------------------
+
+enum BackgroundStatus {
+  NOT_STARTED
+  PENDING
+  CLEARED
+  FLAGGED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  DENIED
+}
+
+model ComplianceRecord {
+  id                  String           @id @default(cuid())
+  operatorId          String           @unique
+  operator            User             @relation(fields: [operatorId], references: [id])
+  insuranceUploaded   Boolean          @default(false)
+  insuranceExpiration DateTime?
+  backgroundStatus    BackgroundStatus @default(NOT_STARTED)
+  referencesCount     Int              @default(0)
+  referencesVerified  Boolean          @default(false)
+  documentsSigned     Boolean          @default(false)
+  termsAccepted       Boolean          @default(false)
+  manualReviewStatus  ReviewStatus     @default(PENDING)
+  notes               String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Documents / Resources
+// ---------------------------------------------------------------------------
+
+enum DocumentAudience {
+  PUBLIC
+  TRAINEE
+  OPERATOR
+  AFFILIATE
+  ADMIN
+}
+
+enum DocumentType {
+  GUIDE
+  CHECKLIST
+  TEMPLATE
+  BROCHURE
+  AGREEMENT
+}
+
+enum DocumentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Document {
+  id        String           @id @default(cuid())
+  title     String
+  audience  DocumentAudience
+  type      DocumentType
+  fileUrl   String?
+  gated     Boolean          @default(false)
+  version   String?
+  status    DocumentStatus   @default(DRAFT)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
