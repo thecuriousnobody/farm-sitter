@@ -33,6 +33,7 @@ model User {
   email         String        @unique
   firstName     String
   lastName      String
+  passwordHash  String?
   phone         String?
   address       String?
   city          String?
@@ -44,6 +45,10 @@ model User {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
+  // Auth.js relations
+  accounts         Account[]
+  sessions         Session[]
+
   operatorProfile  OperatorProfile?
   customerProfile  CustomerProfile?
   enrollments      Enrollment[]
@@ -51,6 +56,43 @@ model User {
   affiliateLicense AffiliateRecord?
   compliance       ComplianceRecord?
   inquiries        CareRequest[]
+  operatorPricing  OperatorPricing?
+  travelInterests  TravelNetworkInterest[]
+}
+
+// Auth.js required models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 // ---------------------------------------------------------------------------
@@ -69,29 +111,65 @@ enum BadgeStatus {
   EXPIRED
 }
 
+enum OnboardingStatus {
+  REGISTERED
+  BG_CHECK_INITIATED
+  BG_CHECK_PENDING
+  BG_CHECK_PASSED
+  BG_CHECK_FAILED
+  PROGRAM_SELECTED
+  PAYMENT_PENDING
+  ENROLLED
+  TRAINING_IN_PROGRESS
+  TRAINING_COMPLETE
+  CREDENTIAL_ISSUED
+  INSURANCE_PENDING
+  INSURANCE_VERIFIED
+  SUBSCRIPTION_ACTIVE
+}
+
+enum ProgramType {
+  COURSEWORK_ONLY
+  COURSEWORK_CERTIFICATION
+  COURSEWORK_CERTIFICATION_BUSINESS
+}
+
 model OperatorProfile {
-  id                  String          @id @default(cuid())
-  userId              String          @unique
-  user                User            @relation(fields: [userId], references: [id])
+  id                  String           @id @default(cuid())
+  userId              String           @unique
+  user                User             @relation(fields: [userId], references: [id])
   businessName        String?
   legalEntityName     String?
-  credentialLevel     CredentialLevel @default(NONE)
-  serviceRadiusMiles  Int             @default(25)
+  credentialLevel     CredentialLevel  @default(NONE)
+  serviceRadiusMiles  Int              @default(25)
   statesServed        String[]
   zipCodesServed      String[]
   animalsExperienced  String[]
   servicesOffered     String[]
-  yearsExperience     Int             @default(0)
+  yearsExperience     Int              @default(0)
   bio                 String?
-  acceptingClients    Boolean         @default(false)
-  directoryVisible    Boolean         @default(false)
-  insuranceVerified   Boolean         @default(false)
-  backgroundVerified  Boolean         @default(false)
-  referencesVerified  Boolean         @default(false)
-  badgeStatus         BadgeStatus     @default(NONE)
+  acceptingClients    Boolean          @default(false)
+  directoryVisible    Boolean          @default(false)
+  insuranceVerified   Boolean          @default(false)
+  insuranceFileUrl    String?
+  insuranceExpiresAt  DateTime?
+  backgroundVerified  Boolean          @default(false)
+  backgroundCheckRef  String?          // Sterling reference ID
+  referencesVerified  Boolean          @default(false)
+  badgeStatus         BadgeStatus      @default(NONE)
   renewalDate         DateTime?
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  onboardingStatus    OnboardingStatus @default(REGISTERED)
+  programSelected     ProgramType?
+  enrolledAt          DateTime?
+  credentialedAt      DateTime?
+  listingApproved     Boolean          @default(false)
+  listingActive       Boolean          @default(false)
+  stripeCustomerId    String?
+  subscriptionId      String?
+  subscriptionActive  Boolean          @default(false)
+  subscriptionStart   DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
 }
 
 // ---------------------------------------------------------------------------
@@ -117,8 +195,11 @@ model CustomerProfile {
 
 enum InquiryStatus {
   NEW
+  UNDER_REVIEW
   MATCHED
+  NO_COVERAGE
   POSTED
+  DUPLICATE
   CLOSED
 }
 
@@ -134,6 +215,8 @@ model CareRequest {
   overnightRequested Boolean       @default(false)
   dogCareRequired    Boolean       @default(false)
   estimatedCareTime  String?
+  visitFrequency     String?
+  propertyType       String?
   city               String?
   state              String?
   zip                String?
@@ -142,8 +225,45 @@ model CareRequest {
   bulletinBoard      Boolean       @default(false)
   adminNotes         String?
   closeReason        String?
+
+  // Travel Network fields
+  travelNetworkConsent    Boolean   @default(false)
+  travelNetworkPostedAt   DateTime?
+  travelNetworkExpiresAt  DateTime?
+  travelNetworkStatus     String?   // open | matched | expired | hidden
+
+  travelInterests    TravelNetworkInterest[]
+
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Travel Network Interest (sitter expresses interest in a no-coverage request)
+// ---------------------------------------------------------------------------
+
+enum TravelInterestStatus {
+  PENDING
+  INTRODUCED
+  DECLINED
+}
+
+model TravelNetworkInterest {
+  id            String                @id @default(cuid())
+  careRequestId String
+  careRequest   CareRequest           @relation(fields: [careRequestId], references: [id])
+  operatorId    String
+  operator      User                  @relation(fields: [operatorId], references: [id])
+  status        TravelInterestStatus  @default(PENDING)
+  adminNotes    String?
+  introducedAt  DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@unique([careRequestId, operatorId])
+  @@index([careRequestId])
+  @@index([operatorId])
+  @@index([status])
 }
 
 // ---------------------------------------------------------------------------
@@ -308,11 +428,35 @@ model ComplianceRecord {
 }
 
 // ---------------------------------------------------------------------------
+// Operator Pricing — per-operator base price overrides
+// Operators set their own market rates; add-on rules are platform-defined.
+// All values stored in cents.
+// ---------------------------------------------------------------------------
+
+model OperatorPricing {
+  id           String   @id @default(cuid())
+  operatorId   String   @unique
+  operator     User     @relation(fields: [operatorId], references: [id])
+
+  // Base prices per visit (cents) — null = use platform default
+  tier1Base    Int?
+  tier2Base    Int?
+  tier3Base    Int?
+  tier4Base    Int?
+  dogsBase     Int?
+  plantsBase   Int?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
 // Documents / Resources
 // ---------------------------------------------------------------------------
 
 enum DocumentAudience {
   PUBLIC
+  ANIMAL_OWNER
   TRAINEE
   OPERATOR
   AFFILIATE
@@ -334,14 +478,180 @@ enum DocumentStatus {
 }
 
 model Document {
-  id        String           @id @default(cuid())
-  title     String
-  audience  DocumentAudience
-  type      DocumentType
-  fileUrl   String?
-  gated     Boolean          @default(false)
-  version   String?
-  status    DocumentStatus   @default(DRAFT)
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  category    String?
+  audience    DocumentAudience
+  type        DocumentType
+  fileUrl     String?
+  gated       Boolean          @default(false)
+  version     String?
+  status      DocumentStatus   @default(DRAFT)
+  sortOrder   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Rural Services Directory
+// ---------------------------------------------------------------------------
+
+enum DirectoryBadge {
+  LISTED    // Basic info — sourced from public data or manual entry
+  CLAIMED   // Provider has confirmed and updated their profile
+  VERIFIED  // Provider submitted additional documentation, reviewed by TFS
+}
+
+enum DirectoryTier {
+  FREE      // Basic listing — free during founding phase
+  PRO       // Enhanced profile, priority placement, lead form, analytics
+  PARTNER   // Top placement, sponsorship blocks, newsletter, regional visibility
+}
+
+model DirectoryCategory {
+  id          String              @id @default(cuid())
+  slug        String              @unique   // used in URL — e.g. "farriers"
+  name        String
+  description String?
+  longDesc    String?
+  icon        String?
+  emergencyRelevant Boolean       @default(false)
+  sortOrder   Int                 @default(0)
+  active      Boolean             @default(true)
+  providers   DirectoryProvider[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model DirectoryProvider {
+  id                 String            @id @default(cuid())
+  slug               String            @unique   // used in URL — e.g. "prairie-hoof-works"
+  businessName       String
+  categoryId         String
+  category           DirectoryCategory @relation(fields: [categoryId], references: [id])
+  badge              DirectoryBadge    @default(LISTED)
+  tier               DirectoryTier     @default(FREE)
+
+  // Location
+  city               String
+  state              String
+  zip                String?
+  serviceRadius      String?           // human-readable — e.g. "25 miles", "Regional"
+  serviceZips        String[]
+  serviceCounties    String[]
+  serviceStates      String[]
+
+  // Contact (may be withheld for LISTED providers until claimed)
+  phone              String?
+  email              String?
+  website            String?
+  facebook           String?
+  instagram          String?
+
+  // Services
+  description        String?           @db.Text
+  speciesServed      String[]
+  specialties        String[]
+  credentials        String?
+  insured            Boolean           @default(false)
+  emergencyAvailable Boolean           @default(false)
+  emergencyPhone     String?
+  hoursOfOperation   String?
+
+  // Admin status
+  featured           Boolean           @default(false)
+  published          Boolean           @default(true)
+  claimedAt          DateTime?
+  verifiedAt         DateTime?
+  adminNotes         String?           @db.Text
+  inquiryFormEnabled Boolean           @default(false)
+
+  // Category-specific flexible data (farrier services, vet practice type, etc.)
+  categoryData       Json?
+
+  // Analytics (future use)
+  profileViews       Int               @default(0)
+  clicksToCall       Int               @default(0)
+  clicksToWebsite    Int               @default(0)
+
+  claimRequests      DirectoryClaimRequest[]
+
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@index([categoryId])
+  @@index([state])
+  @@index([badge])
+  @@index([emergencyAvailable])
+  @@index([featured])
+  @@index([published])
+}
+
+// Submitted when a provider wants to claim an existing listing or add a new one
+model DirectoryClaimRequest {
+  id              String             @id @default(cuid())
+  providerId      String?            // null = new listing request
+  provider        DirectoryProvider? @relation(fields: [providerId], references: [id])
+
+  businessName    String
+  contactName     String
+  contactEmail    String
+  contactPhone    String?
+  categorySlug    String
+  city            String
+  state           String
+  zip             String?
+  serviceRadius   String?
+  phone           String?
+  website         String?
+  description     String?            @db.Text
+  speciesServed   String[]
+  emergencyAvail  Boolean            @default(false)
+  message         String?            @db.Text
+
+  // Admin workflow
+  status          String             @default("PENDING")  // PENDING | APPROVED | DENIED
+  adminNotes      String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([status])
+  @@index([categorySlug])
+}
+
+// ---------------------------------------------------------------------------
+// Founding Member / VIP Leads — animal owners who join before local coverage
+// ---------------------------------------------------------------------------
+
+enum FoundingMemberTier {
+  FOUNDING
+  VIP
+}
+
+model FoundingMemberLead {
+  id             String              @id @default(cuid())
+  email          String              @unique
+  firstName      String
+  lastName       String?
+  zip            String
+  city           String?
+  state          String?
+  animalTypes    String[]
+  tier           FoundingMemberTier  @default(FOUNDING)
+  source         String?             // "find-a-sitter" | "homepage" | "founding-members-page"
+  careRequestId  String?             // linked care request if came from no-coverage flow
+  notifiedAt     DateTime?           // when we sent them the "sitter is available" email
+  convertedAt    DateTime?           // when they submitted a care request post-notification
+  unsubscribed   Boolean             @default(false)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([zip])
+  @@index([state])
+  @@index([tier])
+  @@index([notifiedAt])
 }

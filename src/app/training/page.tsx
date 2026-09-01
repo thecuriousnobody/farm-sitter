@@ -13,16 +13,16 @@ const stats = [
 
 const valuePillars = [
   {
-    title: "Hard Work & Grit",
-    desc: "This isn't a shortcut. It's a real business built with your own two hands.",
+    title: "Positive Attitude & Grace",
+    desc: "Approach every visit with care, warmth, and genuine love for the animals in your charge. Your attitude sets the tone.",
   },
   {
     title: "Trust Above All",
-    desc: "People let you into their homes, their barns, their lives. You earn that trust every single day.",
+    desc: "People let you into their homes, their barns, their lives. You earn that trust every single day — and it's worth protecting.",
   },
   {
     title: "Entrepreneurial Spirit",
-    desc: "You own your business, set your prices, and build your reputation. We give you the tools.",
+    desc: "You own your business, set your prices, and build your reputation. We give you the tools and the credential to back it up.",
   },
   {
     title: "Community First",
@@ -43,72 +43,87 @@ const howItWorks = [
   },
   {
     step: "03",
-    title: "Pass, Certify & Launch",
-    desc: "Pass the final certification exam, receive your Certified Farm Sitter credential, and launch your business.",
+    title: "Practical Exam, Credential & Launch",
+    desc: "Complete an in-person, on-farm practical assessment in the Greater Peoria area. Pass to receive your official Farm Sitter credential and launch your business.",
   },
 ];
 
 const curriculum = [
   {
     track: "Track 1",
-    title: "Animal Care Foundations",
+    title: "Animal Care",
     color: "bg-sage",
+    moduleCount: "12 Modules · Video + Written · Assumes prior animal experience",
     modules: [
-      { num: "1.1", title: "Introduction to Farm Animal Care", format: "VIDEO" },
-      { num: "1.2", title: "Poultry & Fowl", format: "VIDEO" },
-      { num: "1.3", title: "Goats, Sheep & Small Ruminants", format: "VIDEO" },
-      { num: "1.4", title: "Horses & Equine Care", format: "VIDEO" },
-      { num: "1.5", title: "Cattle & Large Livestock", format: "VIDEO" },
-      { num: "1.6", title: "Farm Dogs, Cats & Companion Animals", format: "VIDEO" },
-      { num: "1.7", title: "Specialty & Exotic Animals", format: "EBOOK" },
-      { num: "1.8", title: "Animal Health & Emergency Response", format: "VIDEO" },
-      { num: "1.9", title: "Feeding, Nutrition & Daily Routines", format: "EBOOK" },
-      { num: "1.10", title: "Animal Care Knowledge Check", format: "QUIZ" },
+      { num: "1.1",  title: "Professional Care Standards for Hobby Farm Animals", format: "VIDEO" },
+      { num: "1.2",  title: "Horse Care: Professional Protocols & Client Standards", format: "VIDEO" },
+      { num: "1.3",  title: "Goat & Pig Care Essentials",                 format: "VIDEO" },
+      { num: "1.4",  title: "Poultry: Chickens, Ducks & More",            format: "VIDEO" },
+      { num: "1.5",  title: "Feeding Schedules & Nutrition",              format: "EBOOK" },
+      { num: "1.6",  title: "Animal Health & Emergency Response",         format: "VIDEO" },
+      { num: "1.7",  title: "Farm Chores: Fencing & Maintenance",         format: "VIDEO" },
+      { num: "1.8",  title: "Seasonal Care: Heat, Cold & Weather",        format: "EBOOK" },
+      { num: "1.9",  title: "Safe Handling & Animal Psychology",          format: "VIDEO" },
+      { num: "1.10", title: "Record Keeping for Animal Care",             format: "EBOOK" },
+      { num: "1.11", title: "Dogs, Cats & Companion Animals on the Farm", format: "VIDEO" },
+      { num: "1.12", title: "Specialty Species: Pigs, Alpacas & Exotics", format: "VIDEO" },
     ],
   },
   {
     track: "Track 2",
     title: "Business Foundations",
     color: "bg-earth",
+    moduleCount: "18 Modules · Video + Worksheets",
     modules: [
-      { num: "2.1", title: "Starting Your Farm Sitting Business", format: "VIDEO" },
-      { num: "2.2", title: "Legal Structure & LLC Formation", format: "EBOOK" },
-      { num: "2.3", title: "Insurance & Liability", format: "VIDEO" },
-      { num: "2.4", title: "Pricing Your Services", format: "VIDEO" },
-      { num: "2.5", title: "Client Acquisition & Marketing", format: "VIDEO" },
-      { num: "2.6", title: "The Meet-and-Greet Process", format: "VIDEO" },
-      { num: "2.7", title: "Contracts & Service Agreements", format: "EBOOK" },
-      { num: "2.8", title: "Scheduling, Invoicing & Payment", format: "VIDEO" },
-      { num: "2.9", title: "Taxes & Financial Record Keeping", format: "EBOOK" },
-      { num: "2.10", title: "Business Foundations Knowledge Check", format: "QUIZ" },
+      { num: "2.1",  title: "Company Formation & Legal Structures",          format: "VIDEO" },
+      { num: "2.2",  title: "Basic Accounting for Small Business",           format: "EBOOK" },
+      { num: "2.3",  title: "Pricing Strategies That Win Business",          format: "VIDEO" },
+      { num: "2.4",  title: "Contracts, Liability & Insurance",              format: "EBOOK" },
+      { num: "2.5",  title: "Marketing Your Farm Sitting Business",          format: "VIDEO" },
+      { num: "2.6",  title: "Social Media for Rural Entrepreneurs",          format: "VIDEO" },
+      { num: "2.7",  title: "Customer Service & Client Relationships",       format: "VIDEO" },
+      { num: "2.8",  title: "Conflict Resolution & Hard Conversations",      format: "VIDEO" },
+      { num: "2.9",  title: "Scaling: Hiring & Growing Your Team",           format: "EBOOK" },
+      { num: "2.10", title: "Cashflow, Taxes & Financial Planning",          format: "VIDEO" },
+      { num: "2.11", title: "Building Your Online Presence & Website",       format: "VIDEO" },
+      { num: "2.12", title: "Client Retention & Referral Programs",          format: "VIDEO" },
+      { num: "2.13", title: "Handling Emergencies & Business Continuity",    format: "EBOOK" },
+      { num: "2.14", title: "Setting Boundaries & Managing Scope Creep",     format: "VIDEO" },
+      { num: "2.15", title: "Networking with Vets, Feed Stores & Community", format: "VIDEO" },
+      { num: "2.16", title: "Building a Local Reputation",                   format: "EBOOK" },
+      { num: "2.17", title: "Business Planning & Goal Setting",              format: "VIDEO" },
+      { num: "2.18", title: "Business Foundations Final Review",             format: "REFLECTION" },
     ],
   },
   {
     track: "Track 3",
     title: "Leadership & Character",
     color: "bg-barn",
+    moduleCount: "8 Modules · Video + Reflection",
     modules: [
-      { num: "3.1", title: "The Farm Sitter Code of Ethics", format: "VIDEO" },
-      { num: "3.2", title: "Professionalism & Communication", format: "VIDEO" },
-      { num: "3.3", title: "Conflict Resolution & Difficult Clients", format: "EBOOK" },
-      { num: "3.4", title: "Building Trust in Rural Communities", format: "REFLECTION" },
-      { num: "3.5", title: "Time Management & Self-Discipline", format: "VIDEO" },
-      { num: "3.6", title: "Safety, Boundaries & Self-Care", format: "EBOOK" },
-      { num: "3.7", title: "Growing & Scaling Your Operation", format: "VIDEO" },
-      { num: "3.8", title: "Leadership & Character Knowledge Check", format: "QUIZ" },
+      { num: "3.1", title: "What It Means to Lead",                   format: "VIDEO" },
+      { num: "3.2", title: "Building a Reputation Worth Keeping",     format: "VIDEO" },
+      { num: "3.3", title: "Resilience, Grace & Showing Up for Others",  format: "VIDEO" },
+      { num: "3.4", title: "Values-Based Leadership in Business",     format: "EBOOK" },
+      { num: "3.5", title: "Servant Leadership in Your Community",    format: "VIDEO" },
+      { num: "3.6", title: "Decision Making Under Pressure",          format: "VIDEO" },
+      { num: "3.7", title: "Mentorship: Paying It Forward",           format: "VIDEO" },
+      { num: "3.8", title: "Building Your Legacy",                    format: "REFLECTION" },
     ],
   },
   {
     track: "Track 4",
     title: "Final Certification",
     color: "bg-rust",
+    moduleCount: "Exam + Verification + Launch",
     modules: [
-      { num: "4.1", title: "Certification Exam Prep", format: "VIDEO" },
-      { num: "4.2", title: "Build Your Business Plan", format: "STEP" },
-      { num: "4.3", title: "Create Your Client Welcome Packet", format: "STEP" },
-      { num: "4.4", title: "Set Up Your Online Presence", format: "STEP" },
-      { num: "4.5", title: "Final Certification Review", format: "REFLECTION" },
-      { num: "4.6", title: "Final Exam", format: "EXAM" },
+      { num: "4.1", title: "Certification Exam Prep Guide",         format: "EBOOK" },
+      { num: "4.2", title: "Practice Exam: Animal Care",            format: "QUIZ" },
+      { num: "4.3", title: "Practice Exam: Business Fundamentals",  format: "QUIZ" },
+      { num: "4.4", title: "Practice Exam: Leadership & Ethics",    format: "QUIZ" },
+      { num: "★",   title: "Final Certification Exam",              format: "EXAM" },
+      { num: "4.5", title: "Certificate Issuance & Directory Listing", format: "STEP" },
+      { num: "4.6", title: "Business Launch Day — Go Time",         format: "VIDEO" },
     ],
   },
 ];
@@ -211,7 +226,7 @@ export default function TrainingPage() {
               <span className="text-wheat">Academy</span>
             </h1>
             <p className="text-xl md:text-2xl font-semibold text-wheat-light mb-6">
-              Built on Hard Work. Built for You.
+              Care, Character &amp; Community.
             </p>
             <p className="text-lg text-cream/70 leading-relaxed mb-10 max-w-2xl mx-auto">
               The first comprehensive certification program for
@@ -220,10 +235,10 @@ export default function TrainingPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/contact"
+                href="/become-a-sitter"
                 className="px-8 py-3 bg-rust text-white font-semibold rounded-lg hover:bg-rust-light transition-colors text-lg"
               >
-                Get Certified &mdash; $4,000
+                Enroll Now &mdash; From $3,500
               </Link>
               <a
                 href="#curriculum"
@@ -397,88 +412,118 @@ export default function TrainingPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-bold text-barn-dark mb-3">
-            Pricing
+            Choose Your Program
           </h2>
           <p className="text-earth-dark max-w-2xl mx-auto">
-            One investment. No royalties. No franchise fees. You keep 100% of
-            what you earn.
+            One investment. No royalties. No franchise fees. You keep 100% of what you earn.
+            Pay in full or monthly through Affirm.
           </p>
         </div>
 
-        {/* Pricing cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-14">
-          {/* Certification */}
-          <div className="bg-white rounded-xl border-2 border-barn shadow-md overflow-hidden flex flex-col">
-            <div className="bg-barn px-6 py-5 text-center">
-              <h3 className="text-lg font-bold text-cream">
-                Farm Sitter Certification
-              </h3>
-              <p className="text-3xl font-bold text-wheat mt-1">$4,000</p>
-              <p className="text-sm text-cream/60">One-time investment</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-14">
+          {/* Coursework Only */}
+          <div className="bg-white rounded-xl border border-wheat shadow-sm overflow-hidden flex flex-col">
+            <div className="bg-sage px-6 py-5 text-center">
+              <h3 className="text-lg font-bold text-white">Coursework Only</h3>
+              <p className="text-3xl font-bold text-white mt-1">$3,500</p>
+              <p className="text-sm text-white/60">One-time · self-paced</p>
             </div>
             <ul className="p-6 space-y-3 flex-1">
               {[
                 "Full access to all 4 curriculum tracks",
                 "40+ video lessons, ebooks & quizzes",
                 "Business-in-a-Box resource library",
-                "Certification exam & credential",
-                "National directory listing",
-                "Certified Farm Sitter trust badge",
-                "Graduate network access",
-                "Lifetime curriculum updates",
+                "Certificate of completion",
               ].map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-2 text-sm text-earth-dark"
-                >
-                  <span className="text-sage font-bold mt-0.5">&#10003;</span>
+                <li key={item} className="flex items-start gap-2 text-sm text-earth-dark">
+                  <span className="text-sage font-bold mt-0.5">✓</span>
+                  {item}
+                </li>
+              ))}
+              {[
+                "Certification credential or badge",
+                "Referral directory eligibility",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-earth-light">
+                  <span className="mt-0.5 shrink-0">–</span>
                   {item}
                 </li>
               ))}
             </ul>
             <div className="px-6 pb-6">
               <Link
-                href="/contact"
-                className="block w-full text-center px-6 py-3 bg-rust text-white font-semibold rounded-lg hover:bg-rust-light transition-colors"
+                href="/become-a-sitter"
+                className="block w-full text-center px-6 py-3 bg-sage text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
               >
-                Get Certified
+                Enroll in Coursework
               </Link>
             </div>
           </div>
 
-          {/* Membership */}
-          <div className="bg-white rounded-xl border border-wheat shadow-sm overflow-hidden flex flex-col">
-            <div className="bg-earth px-6 py-5 text-center">
-              <h3 className="text-lg font-bold text-cream">
-                Academy Membership
-              </h3>
-              <p className="text-3xl font-bold text-wheat mt-1">
-                $50<span className="text-lg font-normal text-cream/60">/mo</span>
-              </p>
-              <p className="text-sm text-cream/60">or $500/year</p>
+          {/* Coursework + Certification */}
+          <div className="bg-white rounded-xl border-2 border-barn shadow-md overflow-hidden flex flex-col relative">
+            <div className="bg-barn text-white text-xs font-bold text-center py-1.5 tracking-wide uppercase">
+              Most Popular
+            </div>
+            <div className="bg-barn px-6 py-5 text-center">
+              <h3 className="text-lg font-bold text-cream">Coursework + Certification</h3>
+              <p className="text-3xl font-bold text-wheat mt-1">$4,999</p>
+              <p className="text-sm text-cream/60">One-time · earn your credential</p>
             </div>
             <ul className="p-6 space-y-3 flex-1">
               {[
-                "Continued access to all curriculum updates",
-                "New resources & templates as released",
-                "Graduate network & community forums",
-                "Priority support & coaching calls",
+                "Everything in Coursework",
+                "Online certification assessment",
+                "Official Farm Sitter credential",
+                "Verified digital badge",
+                "Referral directory eligibility",
+                "Monthly subscription access",
               ].map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-2 text-sm text-earth-dark"
-                >
-                  <span className="text-sage font-bold mt-0.5">&#10003;</span>
+                <li key={item} className="flex items-start gap-2 text-sm text-earth-dark">
+                  <span className="text-sage font-bold mt-0.5">✓</span>
                   {item}
                 </li>
               ))}
             </ul>
             <div className="px-6 pb-6">
               <Link
-                href="/contact"
-                className="block w-full text-center px-6 py-3 bg-transparent border-2 border-barn text-barn font-semibold rounded-lg hover:bg-barn hover:text-cream transition-colors"
+                href="/become-a-sitter"
+                className="block w-full text-center px-6 py-3 bg-rust text-white font-semibold rounded-lg hover:bg-rust-light transition-colors"
               >
-                Join Membership
+                Get Credentialed
+              </Link>
+            </div>
+          </div>
+
+          {/* Business Formation */}
+          <div className="bg-white rounded-xl border border-wheat shadow-sm overflow-hidden flex flex-col">
+            <div className="bg-rust px-6 py-5 text-center">
+              <h3 className="text-lg font-bold text-white">+ Business Formation</h3>
+              <p className="text-3xl font-bold text-white mt-1">$8,999</p>
+              <p className="text-sm text-white/60">One-time · launch ready</p>
+            </div>
+            <ul className="p-6 space-y-3 flex-1">
+              {[
+                "Everything in Coursework + Certification",
+                "Business entity formation included",
+                "Handled via LegalZoom or IncFile",
+                "Filing fees covered by The Farm Sitter",
+                "Policy & contract templates",
+                "Business documentation toolkit",
+                "Priority onboarding support",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-earth-dark">
+                  <span className="text-sage font-bold mt-0.5">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div className="px-6 pb-6">
+              <Link
+                href="/become-a-sitter"
+                className="block w-full text-center px-6 py-3 bg-rust text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+              >
+                Launch Your Business
               </Link>
             </div>
           </div>
@@ -493,18 +538,20 @@ export default function TrainingPage() {
             {[
               {
                 label: "Traditional Franchise",
-                cost: "$50K - $200K+",
+                cost: "$50K–$200K+",
                 note: "Plus ongoing royalties",
+                highlight: false,
               },
               {
                 label: "Business School",
-                cost: "$15K - $40K",
+                cost: "$15K–$40K",
                 note: "No industry-specific training",
+                highlight: false,
               },
               {
                 label: "Farm Sitter Academy",
-                cost: "$4,000",
-                note: "Everything included. No royalties.",
+                cost: "From $3,500",
+                note: "Everything included. Zero royalties.",
                 highlight: true,
               },
             ].map((row) => (
@@ -517,26 +564,14 @@ export default function TrainingPage() {
                 }`}
               >
                 <div>
-                  <p
-                    className={`font-semibold ${
-                      row.highlight ? "text-cream" : "text-barn-dark"
-                    }`}
-                  >
+                  <p className={`font-semibold ${row.highlight ? "text-cream" : "text-barn-dark"}`}>
                     {row.label}
                   </p>
-                  <p
-                    className={`text-xs ${
-                      row.highlight ? "text-cream/60" : "text-earth-dark"
-                    }`}
-                  >
+                  <p className={`text-xs ${row.highlight ? "text-cream/60" : "text-earth-dark"}`}>
                     {row.note}
                   </p>
                 </div>
-                <p
-                  className={`text-xl font-bold ${
-                    row.highlight ? "text-wheat" : "text-barn"
-                  }`}
-                >
+                <p className={`text-xl font-bold ${row.highlight ? "text-wheat" : "text-barn"}`}>
                   {row.cost}
                 </p>
               </div>
@@ -601,18 +636,18 @@ export default function TrainingPage() {
       <section className="bg-barn py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-cream mb-4">
-            Ready to Roll Up Your Sleeves?
+            Ready to Begin Your Journey?
           </h2>
           <p className="text-cream/70 mb-8 max-w-xl mx-auto">
-            Join the first class of Certified Farm Sitters. One investment, no
-            royalties, and a business you can be proud of.
+            Join a growing community of Certified Farm Sitters. One investment, no
+            royalties, and a business you can be genuinely proud of.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
-              href="/contact"
+              href="/become-a-sitter"
               className="px-8 py-3 bg-rust text-white font-semibold rounded-lg hover:bg-rust-light transition-colors text-lg"
             >
-              Get Certified &mdash; $4,000
+              Enroll Now &mdash; From $3,500
             </Link>
             <a
               href="#curriculum"

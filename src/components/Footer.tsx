@@ -55,6 +55,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/resources" className="hover:text-wheat-light transition-colors">
+                  Free Resources
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="hover:text-wheat-light transition-colors">
                   About Us
                 </Link>
@@ -74,15 +79,14 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>www.TheFarmSitter.com</li>
-              <li>309-925-1140</li>
+              <li>855-FARMSIT (855-327-6748)</li>
               <li>Peoria, Illinois</li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-barn-light/20 mt-8 pt-6 text-center text-xs text-cream/40">
-          &copy; {new Date().getFullYear()} The Farm Sitter. All rights
-          reserved.
+          &copy; 2026 The Farm Sitter Inc. All rights reserved.
         </div>
       </div>
     </footer>
